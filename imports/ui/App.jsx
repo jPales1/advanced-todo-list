@@ -1,11 +1,20 @@
-import React from 'react';
-import { Hello } from './Hello.jsx';
-import { Info } from './Info.jsx';
+import { Meteor } from 'meteor/meteor';
+import React, { Fragment } from 'react';
+import { useTracker } from "meteor/react-meteor-data";
+import { LoginForm } from './LoginForm';
 
-export const App = () => (
-  <div>
-    <h1>Welcome to Meteor!</h1>
-    <Hello/>
-    <Info/>
-  </div>
-);
+export const App = () => {
+  const user = useTracker(() => Meteor.user());
+
+  return (
+    <div className='main'>
+      {user ? (
+        <Fragment>
+          <h1>Welcome to Meteor!</h1>
+        </Fragment>
+      ) : (
+        <LoginForm />
+      )}
+    </div>
+  )
+};
