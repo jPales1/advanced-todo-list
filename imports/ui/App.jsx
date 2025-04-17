@@ -10,7 +10,7 @@ export const App = () => {
     <div className='main'>
       {user ? (
         <Fragment>
-          <h1>Welcome to Meteor!</h1>
+          <h1>Seja bem-vindo ao Advanced ToDo List!</h1>
         </Fragment>
       ) : (
         <LoginForm />
