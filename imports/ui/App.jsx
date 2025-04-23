@@ -5,6 +5,7 @@ import { LoginForm } from './LoginForm';
 import { Welcome } from './pages/Welcome';
 import { TaskList } from './pages/TaskList';
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { EditTask } from './pages/EditTask';
 
 export const App = () => {
   const user = useTracker(() => Meteor.user());
@@ -19,6 +20,7 @@ export const App = () => {
         <Routes>
           <Route path="/" element={<Welcome />} />
           <Route path="/tasks" element={<TaskList />} />
+          <Route path="/tasks/edit/:taskId" element={<EditTask />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>
