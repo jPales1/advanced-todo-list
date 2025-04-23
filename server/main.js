@@ -1,8 +1,14 @@
-import { Meteor } from "meteor/meteor";
-import { Accounts } from "meteor/accounts-base";
+import { Meteor } from 'meteor/meteor';
+import { Accounts } from 'meteor/accounts-base';
+import { TasksCollection } from '../imports/api/TasksCollection';
+import '../imports/api/tasksMethods';
 
-const SEED_USERNAME = 'usuario123';
-const SEED_PASSWORD = 'senha123';
+Meteor.publish('tasks', function publishTasks() {
+  return TasksCollection.find();
+});
+
+const SEED_USERNAME = 'usuario1234';
+const SEED_PASSWORD = 'senha1234';
 
 Meteor.startup(async () => {
   if (!(await Accounts.findUserByUsername(SEED_USERNAME))) {
