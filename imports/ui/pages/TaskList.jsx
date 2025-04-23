@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 import { TasksCollection } from '../../api/TasksCollection';
-import { Link } from 'react-router-dom';
-import { List, ListItem, ListItemIcon, ListItemText, Typography, Container, TextField, Button } from '@mui/material';
-import Fastfood from '@mui/icons-material/Fastfood';
+import { Link, useNavigate } from 'react-router-dom';
+import { List, ListItem, ListItemIcon, ListItemText, IconButton, Typography, Container, TextField, Button } from '@mui/material';
+import { Edit, Delete, Fastfood } from '@mui/icons-material';
 
 export const TaskList = () => {
   const [taskName, setTaskName] = useState('');
@@ -12,6 +12,8 @@ export const TaskList = () => {
     Meteor.subscribe('tasks');
     return TasksCollection.find({}).fetch();
   });
+
+  const navigate = useNavigate();
 
   const handleAddTask = () => {
     if (taskName.trim()) {
@@ -23,6 +25,18 @@ export const TaskList = () => {
         }
       });
     }
+  };
+
+  const handleDeleteTask = (taskId) => {
+    Meteor.call('tasks.remove', taskId, (error) => {
+      if (error) {
+        console.error('Erro ao remover tarefa:', error);
+      }
+    });
+  };
+
+  const handleEditTask = (taskId) => {
+    navigate(`/tasks/edit/${taskId}`);
   };
 
   return (
@@ -48,7 +62,16 @@ export const TaskList = () => {
       </Button>
       <List>
         {tasks.map((task) => (
-          <ListItem key={task._id}>
+          <ListItem key={task._id} secondaryAction={
+            <>
+              <IconButton edge="end" onClick={() => handleEditTask(task._id)}>
+                <Edit />
+              </IconButton>
+              <IconButton edge="end" onClick={() => handleDeleteTask(task._id)}>
+                <Delete />
+              </IconButton>
+            </>
+          }>
             <ListItemIcon>
               <Fastfood />
             </ListItemIcon>
