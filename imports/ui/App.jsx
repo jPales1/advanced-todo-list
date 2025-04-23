@@ -2,8 +2,8 @@ import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { useTracker } from "meteor/react-meteor-data";
 import { LoginForm } from './LoginForm';
-import { Welcome } from './Welcome';
-import { TaskList } from './TaskList';
+import { Welcome } from './pages/Welcome';
+import { TaskList } from './pages/TaskList';
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 export const App = () => {
