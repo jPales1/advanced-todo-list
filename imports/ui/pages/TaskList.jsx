@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 import { TasksCollection } from '../../api/TasksCollection';
+import { Link } from 'react-router-dom';
 import { List, ListItem, ListItemIcon, ListItemText, Typography, Container, TextField, Button } from '@mui/material';
 import Fastfood from '@mui/icons-material/Fastfood';
 
@@ -26,6 +27,11 @@ export const TaskList = () => {
 
   return (
     <Container maxWidth="sm" style={{ marginTop: '20px' }}>
+      <Link to="/">
+        <Button variant="outlined" color="secondary" style={{ marginBottom: '20px' }}>
+          Voltar
+        </Button>
+      </Link>
       <Typography variant="h4" gutterBottom>
         Lista de Tarefas
       </Typography>
