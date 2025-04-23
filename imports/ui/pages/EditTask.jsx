@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { TasksCollection } from '../../api/TasksCollection';
 import { Container, TextField, Button, Typography } from '@mui/material';
 
 export const EditTask = () => {
   const { taskId } = useParams();
-  const navigate = useNavigate();
   const [task, setTask] = useState(null);
   const [taskName, setTaskName] = useState('');
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const fetchedTask = TasksCollection.findOne(taskId);
@@ -23,7 +23,7 @@ export const EditTask = () => {
         if (error) {
           console.error('Erro ao atualizar tarefa:', error);
         } else {
-          navigate('/tasks');
+          setIsEditing(false);
         }
       });
     }
@@ -41,19 +41,35 @@ export const EditTask = () => {
         </Button>
       </Link>
       <Typography variant="h4" gutterBottom>
-        Editar Tarefa
+        {isEditing ? 'Editar Tarefa' : 'Detalhes da Tarefa'}
       </Typography>
-      <TextField
-        label="Nome da Tarefa"
-        variant="outlined"
-        fullWidth
-        value={taskName}
-        onChange={(e) => setTaskName(e.target.value)}
-        style={{ marginBottom: '10px' }}
-      />
-      <Button variant="contained" color="primary" onClick={handleSaveTask}>
-        Salvar Alterações
-      </Button>
+      {isEditing ? (
+        <>
+          <TextField
+            label="Nome da Tarefa"
+            variant="outlined"
+            fullWidth
+            value={taskName}
+            onChange={(e) => setTaskName(e.target.value)}
+            style={{ marginBottom: '10px' }}
+          />
+          <Button variant="contained" color="primary" onClick={handleSaveTask}>
+            Salvar Alterações
+          </Button>
+        </>
+      ) : (
+        <>
+          <Typography variant="body1" style={{ marginBottom: '10px' }}>
+            <strong>Nome:</strong> {taskName}
+          </Typography>
+          <Typography variant="body2" style={{ marginBottom: '20px' }}>
+            <strong>Criado por:</strong> {task.createdBy}
+          </Typography>
+          <Button variant="contained" color="primary" onClick={() => setIsEditing(true)}>
+            Editar
+          </Button>
+        </>
+      )}
     </Container>
   );
 };
