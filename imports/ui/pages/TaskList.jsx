@@ -1,24 +1,48 @@
-import React from 'react';
-import { List, ListItem, ListItemIcon, ListItemText, Avatar, Typography, Container } from '@mui/material';
-import Fastfood from '@mui/icons-material/Fastfood';
+import React, { useState } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
+import { TasksCollection } from '../../api/TasksCollection';
+import { List, ListItem, ListItemIcon, ListItemText, Typography, Container, TextField, Button } from '@mui/material';
+import Fastfood from '@mui/icons-material/Fastfood';
 
 export const TaskList = () => {
-  // Simulação de dados de tarefas
-  const tasks = useTracker(() => [
-    { id: 1, name: 'Comprar Hamburguér', createdBy: 'João' },
-    { id: 2, name: 'Comprar Milkshake', createdBy: 'Maria' },
-    { id: 3, name: 'Comprar Batata-Frita', createdBy: 'Carlos' },
-  ]);
+  const [taskName, setTaskName] = useState('');
+  const user = useTracker(() => Meteor.user());
+  const tasks = useTracker(() => {
+    Meteor.subscribe('tasks');
+    return TasksCollection.find({}).fetch();
+  });
+
+  const handleAddTask = () => {
+    if (taskName.trim()) {
+      Meteor.call('tasks.insert', { name: taskName, createdBy: user.username }, (error) => {
+        if (error) {
+          console.error('Erro ao adicionar tarefa:', error);
+        } else {
+          setTaskName('');
+        }
+      });
+    }
+  };
 
   return (
     <Container maxWidth="sm" style={{ marginTop: '20px' }}>
       <Typography variant="h4" gutterBottom>
         Lista de Tarefas
       </Typography>
+      <TextField
+        label="Nova Tarefa"
+        variant="outlined"
+        fullWidth
+        value={taskName}
+        onChange={(e) => setTaskName(e.target.value)}
+        style={{ marginBottom: '10px' }}
+      />
+      <Button variant="contained" color="primary" onClick={handleAddTask}>
+        Adicionar Tarefa
+      </Button>
       <List>
         {tasks.map((task) => (
-          <ListItem key={task.id}>
+          <ListItem key={task._id}>
             <ListItemIcon>
               <Fastfood />
             </ListItemIcon>
