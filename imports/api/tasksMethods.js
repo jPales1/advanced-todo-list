@@ -11,6 +11,8 @@ Meteor.methods({
       ...task,
       userId: this.userId,
       createdAt: new Date(),
+      description: '',
+      situation: 'Cadastrada'
     });
   },
   'tasks.remove'(taskId) {
@@ -20,13 +22,14 @@ Meteor.methods({
 
     TasksCollection.removeAsync(taskId);
   },
-  'tasks.update'(taskId, { name }) {
+  'tasks.update'(taskId, { name, description, situation }) {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized');
     }
 
     TasksCollection.updateAsync(
-      taskId, { $set: { name } }
+      taskId,
+      { $set: { name, description, situation } }
     );
   },
 });
