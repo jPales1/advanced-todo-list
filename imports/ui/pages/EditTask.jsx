@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { TasksCollection } from '../../api/TasksCollection';
-import { Container, TextField, Button, Typography } from '@mui/material';
+import { Container, TextField, Button, Typography, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 
 export const EditTask = () => {
   const { taskId } = useParams();
   const [task, setTask] = useState(null);
   const [taskName, setTaskName] = useState('');
+  const [taskDescription, setTaskDescription] = useState('');
+  const [taskSituation, setTaskSituation] = useState('');
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
@@ -14,18 +16,25 @@ export const EditTask = () => {
     if (fetchedTask) {
       setTask(fetchedTask);
       setTaskName(fetchedTask.name);
+      setTaskDescription(fetchedTask.description || '');
+      setTaskSituation(fetchedTask.situation || 'Cadastrada');
     }
   }, [taskId]);
 
   const handleSaveTask = () => {
-    if (taskName.trim()) {
-      Meteor.call('tasks.update', taskId, { name: taskName }, (error) => {
-        if (error) {
-          console.error('Erro ao atualizar tarefa:', error);
-        } else {
-          setIsEditing(false);
+    if (taskName.trim() && taskSituation) {
+      Meteor.call(
+        'tasks.update',
+        taskId,
+        { name: taskName, description: taskDescription, situation: taskSituation },
+        (error) => {
+          if (error) {
+            console.error('Erro ao atualizar tarefa:', error);
+          } else {
+            setIsEditing(false);
+          }
         }
-      });
+      );
     }
   };
 
@@ -53,14 +62,45 @@ export const EditTask = () => {
             onChange={(e) => setTaskName(e.target.value)}
             style={{ marginBottom: '10px' }}
           />
+          <TextField
+            label="Descrição"
+            variant="outlined"
+            fullWidth
+            multiline
+            rows={4}
+            value={taskDescription}
+            onChange={(e) => setTaskDescription(e.target.value)}
+            style={{ marginBottom: '10px' }}
+          />
+          <FormControl fullWidth style={{ marginBottom: '10px' }}>
+            <InputLabel id="situation-label">Situação</InputLabel>
+            <Select
+              labelId="situation-label"
+              value={taskSituation}
+              onChange={(e) => setTaskSituation(e.target.value)}
+            >
+              <MenuItem value="Cadastrada">Cadastrada</MenuItem>
+              <MenuItem value="Em Andamento">Em Andamento</MenuItem>
+              <MenuItem value="Concluída">Concluída</MenuItem>
+            </Select>
+          </FormControl>
           <Button variant="contained" color="primary" onClick={handleSaveTask}>
             Salvar Alterações
           </Button>
         </>
       ) : (
         <>
-          <Typography variant="body1" style={{ marginBottom: '10px' }}>
+          <Typography variant="body1" style={{ marginBottom: '5px' }}>
             <strong>Nome:</strong> {taskName}
+          </Typography>
+          <Typography variant="body1" style={{ marginBottom: '5px' }}>
+            <strong>Descrição:</strong> {taskDescription || 'Sem descrição'}
+          </Typography>
+          <Typography variant="body1" style={{ marginBottom: '5px' }}>
+            <strong>Situação:</strong> {taskSituation || 'Cadastrada'}
+          </Typography>
+          <Typography variant="body1" style={{ marginBottom: '5px' }}>
+            <strong>Data:</strong> {task.createdAt ? new Date(task.createdAt).toLocaleDateString() : 'N/A'}
           </Typography>
           <Typography variant="body2" style={{ marginBottom: '20px' }}>
             <strong>Criado por:</strong> {task.createdBy}
