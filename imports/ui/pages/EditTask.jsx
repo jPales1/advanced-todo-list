@@ -16,8 +16,8 @@ export const EditTask = () => {
     if (fetchedTask) {
       setTask(fetchedTask);
       setTaskName(fetchedTask.name);
-      setTaskDescription(fetchedTask.description || '');
-      setTaskSituation(fetchedTask.situation || 'Cadastrada');
+      setTaskDescription(fetchedTask.description);
+      setTaskSituation(fetchedTask.situation);
     }
   }, [taskId]);
 
@@ -36,6 +36,21 @@ export const EditTask = () => {
         }
       );
     }
+  };
+
+  const handleChangeSituation = (newSituation) => {
+    Meteor.call(
+      'tasks.update',
+      taskId,
+      { name: taskName, description: taskDescription, situation: newSituation },
+      (error) => {
+        if (error) {
+          console.error('Erro ao alterar situação:', error);
+        } else {
+          setTaskSituation(newSituation);
+        }
+      }
+    );
   };
 
   if (!task) {
@@ -97,7 +112,7 @@ export const EditTask = () => {
             <strong>Descrição:</strong> {taskDescription || 'Sem descrição'}
           </Typography>
           <Typography variant="body1" style={{ marginBottom: '5px' }}>
-            <strong>Situação:</strong> {taskSituation || 'Cadastrada'}
+            <strong>Situação:</strong> {taskSituation}
           </Typography>
           <Typography variant="body1" style={{ marginBottom: '5px' }}>
             <strong>Data:</strong> {task.createdAt ? new Date(task.createdAt).toLocaleDateString() : 'N/A'}
@@ -105,7 +120,39 @@ export const EditTask = () => {
           <Typography variant="body2" style={{ marginBottom: '20px' }}>
             <strong>Criado por:</strong> {task.createdBy}
           </Typography>
-          <Button variant="contained" color="primary" onClick={() => setIsEditing(true)}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleChangeSituation('Em Andamento')}
+            disabled={taskSituation !== 'Cadastrada'}
+            style={{ marginRight: '10px' }}
+          >
+            Iniciar
+          </Button>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => handleChangeSituation('Concluída')}
+            disabled={taskSituation !== 'Em Andamento'}
+            style={{ marginRight: '10px' }}
+          >
+            Concluir
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => handleChangeSituation('Cadastrada')}
+            disabled={taskSituation === 'Cadastrada'}
+            style={{ marginRight: '10px' }}
+          >
+            Reabrir
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setIsEditing(true)}
+            style={{ marginRight: '10px' }}
+          >
             Editar
           </Button>
         </>
