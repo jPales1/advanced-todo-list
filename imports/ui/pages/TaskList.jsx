@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 import { TasksCollection } from '../../api/TasksCollection';
 import { Link, useNavigate } from 'react-router-dom';
-import { List, ListItem, ListItemIcon, ListItemText, IconButton, Typography, Container, TextField, Button } from '@mui/material';
+import { List, ListItem, ListItemIcon, ListItemText, IconButton, Typography, Container, TextField, Button, Checkbox, FormControlLabel } from '@mui/material';
 import { Edit, Delete, Fastfood } from '@mui/icons-material';
 
 export const TaskList = () => {
   const [taskName, setTaskName] = useState('');
+  const [isPersonal, setIsPersonal] = useState(false);
   const user = useTracker(() => Meteor.user());
   const tasks = useTracker(() => {
     Meteor.subscribe('tasks');
@@ -17,11 +18,12 @@ export const TaskList = () => {
 
   const handleAddTask = () => {
     if (taskName.trim()) {
-      Meteor.call('tasks.insert', { name: taskName, createdBy: user.username }, (error) => {
+      Meteor.call('tasks.insert', { name: taskName, isPersonal, createdBy: user.username }, (error) => {
         if (error) {
           console.error('Erro ao adicionar tarefa:', error);
         } else {
           setTaskName('');
+          setIsPersonal(false);
         }
       });
     }
@@ -49,15 +51,27 @@ export const TaskList = () => {
       <Typography variant="h4" gutterBottom>
         Lista de Tarefas
       </Typography>
-      <TextField
-        label="Nova Tarefa"
-        variant="outlined"
-        fullWidth
-        value={taskName}
-        onChange={(e) => setTaskName(e.target.value)}
-        style={{ marginBottom: '10px' }}
-      />
-      <Button variant="contained" color="primary" onClick={handleAddTask}>
+      <div>
+        <TextField
+          label="Nova Tarefa"
+          variant="outlined"
+          fullWidth
+          value={taskName}
+          onChange={(e) => setTaskName(e.target.value)}
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={isPersonal}
+              onChange={(e) => setIsPersonal(e.target.checked)}
+              color="primary"
+            />
+          }
+          label="Tarefa Pessoal"
+          style={{ marginBottom: '10px' }}
+        />
+      </div>
+      <Button variant="contained" color="primary" onClick={handleAddTask} edge="end">
         Adicionar Tarefa
       </Button>
       <List>
