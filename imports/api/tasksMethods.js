@@ -20,11 +20,21 @@ Meteor.methods({
       throw new Meteor.Error('Not authorized');
     }
 
+    const task = TasksCollection.findOne(taskId);
+    if (task.userId !== this.userId){
+      throw new Meteor.Error('Not authorized to delete this task!')
+    }
+
     TasksCollection.removeAsync(taskId);
   },
   'tasks.update'(taskId, { name, description, situation }) {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized');
+    }
+
+    const task = TasksCollection.findOne(taskId);
+    if (task.userId !== this.userId){
+      throw new Meteor.Error('Not authorized to edit this task!')
     }
 
     TasksCollection.updateAsync(

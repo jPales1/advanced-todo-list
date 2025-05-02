@@ -64,10 +64,10 @@ export const TaskList = () => {
         {tasks.map((task) => (
           <ListItem key={task._id} secondaryAction={
             <>
-              <IconButton edge="end" onClick={() => handleEditTask(task._id)}>
+              <IconButton edge="end" onClick={() => handleEditTask(task._id)} disabled={task.userId !== user._id}>
                 <Edit />
               </IconButton>
-              <IconButton edge="end" onClick={() => handleDeleteTask(task._id)}>
+              <IconButton edge="end" onClick={() => handleDeleteTask(task._id)} disabled={task.userId !== user._id}>
                 <Delete />
               </IconButton>
             </>
