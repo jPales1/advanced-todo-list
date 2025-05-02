@@ -27,7 +27,7 @@ Meteor.methods({
 
     await TasksCollection.removeAsync(taskId);
   },
-  async 'tasks.update'(taskId, { name, description, situation }) {
+  async 'tasks.update'(taskId, { name, description, situation, isPersonal }) {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized');
     }
@@ -39,7 +39,7 @@ Meteor.methods({
 
     await TasksCollection.updateAsync(
       taskId,
-      { $set: { name, description, situation } }
+      { $set: { name, description, situation, isPersonal } }
     );
   },
 });
