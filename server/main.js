@@ -4,7 +4,16 @@ import { TasksCollection } from '../imports/api/TasksCollection';
 import '../imports/api/tasksMethods';
 
 Meteor.publish('tasks', function publishTasks() {
-  return TasksCollection.find();
+  if (!this.userId) {
+    return this.ready();
+  }
+
+  return TasksCollection.find({
+    $or: [
+      { isPersonal: false },
+      { userId: this.userId },
+    ],
+  });
 });
 
 const SEED_USERNAME = 'usuario1234';
