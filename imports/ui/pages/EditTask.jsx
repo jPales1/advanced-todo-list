@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { TasksCollection } from '../../api/TasksCollection';
-import { Container, TextField, Button, Typography, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { Container, TextField, Button, Typography, MenuItem, Select, FormControl, InputLabel, FormControlLabel, Checkbox } from '@mui/material';
 
 export const EditTask = () => {
   const { taskId } = useParams();
@@ -9,6 +9,7 @@ export const EditTask = () => {
   const [taskName, setTaskName] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
   const [taskSituation, setTaskSituation] = useState('');
+  const [isPersonal, setIsPersonal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
@@ -18,6 +19,7 @@ export const EditTask = () => {
       setTaskName(fetchedTask.name);
       setTaskDescription(fetchedTask.description);
       setTaskSituation(fetchedTask.situation);
+      setIsPersonal(fetchedTask.isPersonal);
     }
   }, [taskId]);
 
@@ -26,7 +28,7 @@ export const EditTask = () => {
       Meteor.call(
         'tasks.update',
         taskId,
-        { name: taskName, description: taskDescription, situation: taskSituation },
+        { name: taskName, description: taskDescription, situation: taskSituation, isPersonal },
         (error) => {
           if (error) {
             console.error('Erro ao atualizar tarefa:', error);
@@ -42,7 +44,7 @@ export const EditTask = () => {
     Meteor.call(
       'tasks.update',
       taskId,
-      { name: taskName, description: taskDescription, situation: newSituation },
+      { situation: newSituation },
       (error) => {
         if (error) {
           console.error('Erro ao alterar situação:', error);
@@ -99,9 +101,22 @@ export const EditTask = () => {
               <MenuItem value="Concluída">Concluída</MenuItem>
             </Select>
           </FormControl>
-          <Button variant="contained" color="primary" onClick={handleSaveTask}>
-            Salvar Alterações
-          </Button>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={isPersonal}
+                onChange={(e) => setIsPersonal(e.target.checked)}
+                color="primary"
+              />
+            }
+            label="Tarefa Pessoal"
+            style={{ marginBottom: '10px' }}
+          />
+          <div>
+            <Button variant="contained" color="primary" onClick={handleSaveTask}>
+              Salvar Alterações
+            </Button>
+          </div>
         </>
       ) : (
         <>
@@ -117,8 +132,11 @@ export const EditTask = () => {
           <Typography variant="body1" style={{ marginBottom: '5px' }}>
             <strong>Data:</strong> {task.createdAt ? new Date(task.createdAt).toLocaleDateString() : 'N/A'}
           </Typography>
-          <Typography variant="body2" style={{ marginBottom: '20px' }}>
+          <Typography variant="body2">
             <strong>Criado por:</strong> {task.createdBy}
+          </Typography>
+          <Typography variant="body2" style={{ marginBottom: '20px' }}>
+            <strong>Pessoal?</strong> {isPersonal ? 'Sim' : 'Não'}
           </Typography>
           <Button
             variant="contained"
