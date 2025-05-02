@@ -15,29 +15,29 @@ Meteor.methods({
       situation: 'Cadastrada'
     });
   },
-  'tasks.remove'(taskId) {
+  async 'tasks.remove'(taskId) {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized');
     }
 
-    const task = TasksCollection.findOne(taskId);
+    const task = await TasksCollection.findOneAsync(taskId);
     if (task.userId !== this.userId){
       throw new Meteor.Error('Not authorized to delete this task!')
     }
 
-    TasksCollection.removeAsync(taskId);
+    await TasksCollection.removeAsync(taskId);
   },
-  'tasks.update'(taskId, { name, description, situation }) {
+  async 'tasks.update'(taskId, { name, description, situation }) {
     if (!this.userId) {
       throw new Meteor.Error('Not authorized');
     }
 
-    const task = TasksCollection.findOne(taskId);
+    const task = await TasksCollection.findOneAsync(taskId);
     if (task.userId !== this.userId){
       throw new Meteor.Error('Not authorized to edit this task!')
     }
 
-    TasksCollection.updateAsync(
+    await TasksCollection.updateAsync(
       taskId,
       { $set: { name, description, situation } }
     );
