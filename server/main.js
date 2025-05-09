@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Accounts } from 'meteor/accounts-base';
 import { TasksCollection } from '../imports/api/TasksCollection';
 import '../imports/api/tasksMethods';
+import '../imports/api/usersMethods';
 
 Meteor.publish('tasks', function publishTasks() {
   if (!this.userId) {
@@ -14,6 +15,17 @@ Meteor.publish('tasks', function publishTasks() {
       { userId: this.userId },
     ],
   });
+});
+
+Meteor.publish('userData', function publishUserData() {
+  if (!this.userId) {
+    return this.ready();
+  }
+
+  return Meteor.users.find(
+    { _id: this.userId },
+    { fields: { profile: 1 } }
+  );
 });
 
 const SEED_USERNAME = 'usuario1234';
