@@ -2,8 +2,20 @@ import React, { useState } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 import { TasksCollection } from '../../api/TasksCollection';
 import { Link, useNavigate } from 'react-router-dom';
-import { List, ListItem, ListItemIcon, ListItemText, IconButton, Typography, Container, TextField, Button, Checkbox, FormControlLabel } from '@mui/material';
-import { Edit, Delete, Fastfood } from '@mui/icons-material';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Checkbox from '@mui/material';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Edit from '@mui/icons-material/Edit';
+import Delete from '@mui/icons-material/Delete';
+import Fastfood from '@mui/icons-material/Fastfood';
 
 export const TaskList = () => {
   const [taskName, setTaskName] = useState('');

@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Meteor } from 'meteor/meteor';
-import { Container, TextField, Button, Typography, MenuItem, Select, FormControl, InputLabel, Avatar } from '@mui/material';
 import { useTracker } from 'meteor/react-meteor-data';
+import Container from '@mui/material/Container';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Avatar from '@mui/material/Avatar';
 
 export const UserProfile = () => {
   const [name, setName] = useState('');

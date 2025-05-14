@@ -1,8 +1,19 @@
 import React, { useState } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 import { Link } from 'react-router-dom';
-import { Drawer, Box, Avatar, Typography, List, ListItem, ListItemButton, ListItemIcon, ListItemText, IconButton } from '@mui/material';
-import { Menu as MenuIcon, List as ListIcon, AccountCircle as AccountCircleIcon } from '@mui/icons-material';
+import Drawer from '@mui/material/Drawer';
+import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
+import Typography from '@mui/material/Typography';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import ListIcon from '@mui/icons-material/List';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 export default function UserDrawer() {
   const [open, setOpen] = useState(false);

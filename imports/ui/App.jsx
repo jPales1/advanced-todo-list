@@ -1,10 +1,10 @@
 import { Meteor } from 'meteor/meteor';
 import React from 'react';
 import { useTracker } from "meteor/react-meteor-data";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { LoginForm } from './LoginForm';
 import { Welcome } from './pages/Welcome';
 import { TaskList } from './pages/TaskList';
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { EditTask } from './pages/EditTask';
 import { UserProfile } from './pages/UserProfile';
 import UserDrawer from './components/Drawer';
