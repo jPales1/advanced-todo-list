@@ -12,21 +12,23 @@ import UserDrawer from './components/Drawer';
 export const App = () => {
   const user = useTracker(() => Meteor.user());
 
-  if (!user) {
-    return <LoginForm />;
-  }
-
   return (
     <div className='main'>
       <Router>
-      <UserDrawer />
-        <Routes>
-          <Route path="/" element={<Welcome />} />
-          <Route path="/tasks" element={<TaskList />} />
-          <Route path="/tasks/edit/:taskId" element={<EditTask />} />
-          <Route path="*" element={<Navigate to="/" />} />
-          <Route path="/profile" element={<UserProfile />} />
-        </Routes>
+        {!user ? (
+          <LoginForm />
+        ) : (
+          <>
+            <UserDrawer />
+            <Routes>
+              <Route path="/" element={<Welcome />} />
+              <Route path="/tasks" element={<TaskList />} />
+              <Route path="/tasks/edit/:taskId" element={<EditTask />} />
+              <Route path="*" element={<Navigate to="/" />} />
+              <Route path="/profile" element={<UserProfile />} />
+            </Routes>
+          </>
+        )}
       </Router>
     </div>
   );
