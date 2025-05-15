@@ -1,9 +1,22 @@
 import { Meteor } from "meteor/meteor";
 import React, { useState } from "react";
+import Container from "@mui/material/Container";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import InputAdornment from "@mui/material/InputAdornment";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import Lock from "@mui/icons-material/Lock";
+import Box from "@mui/material/Box";
+import Link from "@mui/material/Link";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 
 export const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const submit = (e) => {
     e.preventDefault();
@@ -12,39 +25,94 @@ export const LoginForm = () => {
   };
 
   return (
-    <div className="login-form-div">
-      <h3>Bem-vindo ao Advanced ToDo List</h3>
+    <Container sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+      <Paper elevation={3} sx={{ padding: 4, borderRadius: 2, width: '100%', maxWidth: 500 }}>
+        <Stack spacing={1} component="form" onSubmit={submit} className="login-form">
+          <Typography variant="h4" component="h1" gutterBottom fontWeight="bold" >
+            Entrar
+          </Typography>
+          <Box sx={{ marginBottom: "10px !important" }}>
+            <Typography variant="body1" gutterBottom color="text.secondary">
+              Entre com seu usuário e senha para acessar as tarefas
+            </Typography>
+          </Box>
 
-      <form onSubmit={submit} className="login-form">
-        <div>
-          <input
-            type="text"
+          <Typography variant="body3" fontWeight="bold">
+            Usuário
+          </Typography>
+          <TextField
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <AccountCircle />
+                  </InputAdornment>
+                ),
+              },
+            }}
             placeholder="Usuário"
+            variant="outlined"
+            fullWidth
             name="username"
             required
+            value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
-        </div>
 
-        <div>
-          <input
+          <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px !important' }}>
+            <Typography variant="body3" fontWeight="bold">
+              Senha
+            </Typography>
+            <Link
+              component={RouterLink}
+              to="/reset-password"
+              variant="body2"
+              color="primary"
+              sx={{ fontWeight: 'bold', cursor: 'pointer' }}
+            >
+              Esqueceu a senha?
+            </Link>
+          </Box>
+          <TextField
+            slotProps={{
+              input: {
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Lock />
+                  </InputAdornment>
+                ),
+              },
+            }}
             type="password"
-            placeholder="Senha"
+            variant="outlined"
+            fullWidth
             name="password"
             required
+            value={password}
+            placeholder="Senha"
             onChange={(e) => setPassword(e.target.value)}
           />
-        </div>
 
-        <div>
-          <button type="submit">Entrar</button>
-        </div>
-      </form>
+          <Button type="submit" variant="contained" fullWidth>
+            Entrar
+          </Button>
 
-      <br />
-      <button className="register-button">Cadastrar</button>
-      <br /><br />
-      <button className="reset-password-button">Recuperar Senha</button>
-    </div>
-  )
-}
+          <Box sx={{ width: '100%', textAlign: 'center', marginTop: '20px !important' }}>
+          <Typography variant="body2" align="center" sx={{ width: '100%' }}>
+            Não tem uma conta?{' '}
+            <Link
+              component={RouterLink}
+              variant="body2"
+              color="primary"
+              sx={{ fontWeight: 'bold' }}
+              to="/register"
+            >
+              Cadastre-se
+            </Link>
+          </Typography>
+          </Box>
+        </Stack>
+      </Paper>
+    </Container>
+  );
+};
