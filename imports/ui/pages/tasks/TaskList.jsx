@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
-import { TasksCollection } from '../../api/TasksCollection';
+import { TasksCollection } from '../../../api/TasksCollection';
 import { Link, useNavigate } from 'react-router-dom';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
