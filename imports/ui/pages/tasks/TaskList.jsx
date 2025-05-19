@@ -30,6 +30,7 @@ const statusColors = {
 export const TaskList = () => {
   const [taskName, setTaskName] = useState('');
   const [isPersonal, setIsPersonal] = useState(false);
+  const [taskError, setTaskError] = useState('');
   const user = useTracker(() => Meteor.user());
   const tasks = useTracker(() => {
     Meteor.subscribe('tasks');
@@ -44,6 +45,7 @@ export const TaskList = () => {
 
   const handleAddTask = () => {
     if (taskName.trim()) {
+      setTaskError('');
       Meteor.call('tasks.insert', { name: taskName, isPersonal, createdBy: user.username }, (error) => {
         if (error) {
           console.error('Erro ao adicionar tarefa:', error);
@@ -52,6 +54,8 @@ export const TaskList = () => {
           setIsPersonal(false);
         }
       });
+    } else {
+      setTaskError('Por favor, preencha o nome da tarefa');
     }
   };
 
@@ -98,7 +102,12 @@ export const TaskList = () => {
             variant="outlined"
             fullWidth
             value={taskName}
-            onChange={(e) => setTaskName(e.target.value)}
+            onChange={(e) => {
+              setTaskName(e.target.value);
+              setTaskError('');
+            }}
+            error={!!taskError}
+            helperText={taskError}
           />
           <FormControlLabel
             control={
