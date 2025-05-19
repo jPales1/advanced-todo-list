@@ -76,7 +76,7 @@ export const TaskList = () => {
   };
 
   return (
-    <Container sx={{ mt: 8, mb: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <Container sx={{ mt: 4, mb: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Paper elevation={3} sx={{ p: 4, borderRadius: 3, width: '100%', maxWidth: 700 }}>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
           <Typography variant="h4" fontWeight="bold">
