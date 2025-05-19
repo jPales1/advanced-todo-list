@@ -10,6 +10,11 @@ import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Avatar from '@mui/material/Avatar';
+import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
+import SaveIcon from '@mui/icons-material/Save';
 
 export const UserProfile = () => {
   const [name, setName] = useState('');
@@ -64,70 +69,105 @@ export const UserProfile = () => {
   };
 
   return (
-    <Container maxWidth="sm" style={{ marginTop: '20px' }}>
-      <Typography variant="h4" gutterBottom>
-        Perfil do Usuário
-      </Typography>
-      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-        <Avatar
-          src={previewPhoto}
-          alt="Foto do Usuário"
-          style={{ width: '100px', height: '100px', margin: '0 auto' }}
-        />
-        <Button variant="contained" component="label" style={{ marginTop: '10px' }}>
-          Alterar Foto
-          <input type="file" hidden accept="image/*" onChange={handlePhotoChange} />
-        </Button>
-      </div>
-      <TextField
-        label="Nome"
-        variant="outlined"
-        fullWidth
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        style={{ marginBottom: '10px' }}
-      />
-      <TextField
-        label="Email"
-        variant="outlined"
-        fullWidth
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        style={{ marginBottom: '10px' }}
-      />
-      <TextField
-        label="Data de Nascimento"
-        type="date"
-        variant="outlined"
-        fullWidth
-        value={birthDate}
-        onChange={(e) => setBirthDate(e.target.value)}
-        InputLabelProps={{ shrink: true }}
-        style={{ marginBottom: '10px' }}
-      />
-      <FormControl fullWidth style={{ marginBottom: '10px' }}>
-        <InputLabel id="gender-label">Sexo</InputLabel>
-        <Select
-          labelId="gender-label"
-          value={gender}
-          onChange={(e) => setGender(e.target.value)}
-        >
-          <MenuItem value="Masculino">Masculino</MenuItem>
-          <MenuItem value="Feminino">Feminino</MenuItem>
-          <MenuItem value="Outro">Outro</MenuItem>
-        </Select>
-      </FormControl>
-      <TextField
-        label="Empresa"
-        variant="outlined"
-        fullWidth
-        value={company}
-        onChange={(e) => setCompany(e.target.value)}
-        style={{ marginBottom: '10px' }}
-      />
-      <Button variant="contained" color="primary" onClick={handleSaveProfile}>
-        Salvar Perfil
-      </Button>
+    <Container sx={{ mt: 4, mb: 4 }}>
+      <Paper elevation={3} sx={{ p: 4, borderRadius: 3 }}>
+        <Stack spacing={3}>
+          <Typography variant="h4" fontWeight="bold">
+            Perfil do Usuário
+          </Typography>
+
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+            <Avatar
+              src={previewPhoto}
+              alt="Foto do Usuário"
+              sx={{ 
+                width: 120, 
+                height: 120, 
+                border: '2px solid',
+                borderColor: 'primary.main',
+                bgcolor: 'primary.light'
+              }}
+            />
+            <Button
+              variant="outlined"
+              component="label"
+              startIcon={<PhotoCameraIcon />}
+              sx={{ borderRadius: 2, textTransform: 'none' }}
+            >
+              Alterar Foto
+              <input type="file" hidden accept="image/*" onChange={handlePhotoChange} />
+            </Button>
+          </Box>
+
+          <Stack spacing={2}>
+            <TextField
+              label="Nome"
+              variant="outlined"
+              fullWidth
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+            />
+            <TextField
+              label="Email"
+              variant="outlined"
+              fullWidth
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+            />
+            <TextField
+              label="Data de Nascimento"
+              type="date"
+              variant="outlined"
+              fullWidth
+              value={birthDate}
+              onChange={(e) => setBirthDate(e.target.value)}
+              slotProps={{
+                input: {
+                  shrink: true
+                }
+              }}
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+            />
+            <FormControl fullWidth>
+              <InputLabel id="gender-label">Sexo</InputLabel>
+              <Select
+                labelId="gender-label"
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                sx={{ borderRadius: 2 }}
+              >
+                <MenuItem value="Masculino">Masculino</MenuItem>
+                <MenuItem value="Feminino">Feminino</MenuItem>
+                <MenuItem value="Outro">Outro</MenuItem>
+              </Select>
+            </FormControl>
+            <TextField
+              label="Empresa"
+              variant="outlined"
+              fullWidth
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+              sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+            />
+          </Stack>
+
+          <Button
+            variant="contained"
+            startIcon={<SaveIcon />}
+            onClick={handleSaveProfile}
+            sx={{
+              borderRadius: 2,
+              textTransform: 'none',
+              py: 1.5,
+              mt: 2
+            }}
+          >
+            Salvar Perfil
+          </Button>
+        </Stack>
+      </Paper>
     </Container>
   );
 };
