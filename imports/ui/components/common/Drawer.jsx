@@ -21,6 +21,54 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import Divider from '@mui/material/Divider';
 import Tooltip from '@mui/material/Tooltip';
 
+const MenuItem = ({ open, path, icon: Icon, label, onClick, isCurrentPath }) => {
+  const buttonContent = (
+    <ListItemButton
+      component={onClick ? 'button' : Link}
+      to={!onClick ? path : undefined}
+      onClick={onClick}
+      sx={{
+        minHeight: 48,
+        justifyContent: open ? 'initial' : 'center',
+        px: 2.5,
+        bgcolor: isCurrentPath ? 'primary.light' : 'transparent',
+        color: isCurrentPath ? 'primary.main' : 'inherit',
+        '&:hover': {
+          bgcolor: 'primary.light',
+          color: 'primary.main'
+        },
+        transition: 'background-color 0.2s ease-in-out, color 0.2s ease-in-out'
+      }}
+    >
+      <ListItemIcon sx={{
+        minWidth: 0,
+        mr: open ? 3 : 'auto',
+        justifyContent: 'center',
+        color: 'inherit'
+      }}>
+        <Icon />
+      </ListItemIcon>
+      {open && <ListItemText primary={label} />}
+    </ListItemButton>
+  );
+
+  if (!open) {
+    return (
+      <Tooltip title={label} placement="right">
+        <ListItem disablePadding>
+          {buttonContent}
+        </ListItem>
+      </Tooltip>
+    );
+  }
+
+  return (
+    <ListItem disablePadding>
+      {buttonContent}
+    </ListItem>
+  );
+};
+
 export default function UserDrawer() {
   const [open, setOpen] = useState(false);
   const user = useTracker(() => Meteor.user());
@@ -39,6 +87,12 @@ export default function UserDrawer() {
   const isCurrentPath = (path) => {
     return location.pathname === path;
   };
+
+  const menuItems = [
+    { path: '/', icon: DashboardIcon, label: 'Dashboard' },
+    { path: '/tasks', icon: ListIcon, label: 'Lista de Tarefas' },
+    { path: '/profile', icon: AccountCircleIcon, label: 'Perfil do Usuário' },
+  ];
 
   return (
     <Drawer
@@ -92,199 +146,19 @@ export default function UserDrawer() {
         <Divider />
 
         <List>
-          {!open && (
-            <Tooltip title="Dashboard" placement="right">
-              <ListItem disablePadding>
-                <ListItemButton
-                  component={Link}
-                  to="/"
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: 'center',
-                    px: 2.5,
-                    bgcolor: isCurrentPath('/') ? 'primary.light' : 'transparent',
-                    color: isCurrentPath('/') ? 'primary.main' : 'inherit',
-                    '&:hover': {
-                      bgcolor: 'primary.light',
-                      color: 'primary.main'
-                    },
-                    transition: 'background-color 0.2s ease-in-out, color 0.2s ease-in-out'
-                  }}
-                >
-                  <ListItemIcon sx={{ 
-                    minWidth: 0, 
-                    mr: open ? 3 : 'auto', 
-                    justifyContent: 'center',
-                    color: 'inherit'
-                  }}>
-                    <DashboardIcon />
-                  </ListItemIcon>
-                  {open && <ListItemText primary="Dashboard" />}
-                </ListItemButton>
-              </ListItem>
-            </Tooltip>
-          )}
-          {open && (
-            <ListItem disablePadding>
-              <ListItemButton
-                component={Link}
-                to="/"
-                sx={{
-                  minHeight: 48,
-                  justifyContent: 'initial',
-                  px: 2.5,
-                  bgcolor: isCurrentPath('/') ? 'primary.light' : 'transparent',
-                  color: isCurrentPath('/') ? 'primary.main' : 'inherit',
-                  '&:hover': {
-                    bgcolor: 'primary.light',
-                    color: 'primary.main'
-                  },
-                  transition: 'background-color 0.2s ease-in-out, color 0.2s ease-in-out'
-                }}
-              >
-                <ListItemIcon sx={{ 
-                  minWidth: 0, 
-                  mr: open ? 3 : 'auto', 
-                  justifyContent: 'center',
-                  color: 'inherit'
-                }}>
-                  <DashboardIcon />
-                </ListItemIcon>
-                <ListItemText primary="Dashboard" />
-              </ListItemButton>
-            </ListItem>
-          )}
-
-          {!open && (
-            <Tooltip title="Lista de Tarefas" placement="right">
-              <ListItem disablePadding>
-                <ListItemButton
-                  component={Link}
-                  to="/tasks"
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: 'center',
-                    px: 2.5,
-                    bgcolor: isCurrentPath('/tasks') ? 'primary.light' : 'transparent',
-                    color: isCurrentPath('/tasks') ? 'primary.main' : 'inherit',
-                    '&:hover': {
-                      bgcolor: 'primary.light',
-                      color: 'primary.main'
-                    },
-                    transition: 'background-color 0.2s ease-in-out, color 0.2s ease-in-out'
-                  }}
-                >
-                  <ListItemIcon sx={{ 
-                    minWidth: 0, 
-                    mr: open ? 3 : 'auto', 
-                    justifyContent: 'center',
-                    color: 'inherit'
-                  }}>
-                    <ListIcon />
-                  </ListItemIcon>
-                  {open && <ListItemText primary="Lista de Tarefas" />}
-                </ListItemButton>
-              </ListItem>
-            </Tooltip>
-          )}
-          {open && (
-            <ListItem disablePadding>
-              <ListItemButton
-                component={Link}
-                to="/tasks"
-                sx={{
-                  minHeight: 48,
-                  justifyContent: 'initial',
-                  px: 2.5,
-                  bgcolor: isCurrentPath('/tasks') ? 'primary.light' : 'transparent',
-                  color: isCurrentPath('/tasks') ? 'primary.main' : 'inherit',
-                  '&:hover': {
-                    bgcolor: 'rgba(103, 58, 183, 0.08)',
-                    color: 'primary.main'
-                  },
-                  transition: 'background-color 0.2s ease-in-out, color 0.2s ease-in-out'
-                }}
-              >
-                <ListItemIcon sx={{ 
-                  minWidth: 0, 
-                  mr: open ? 3 : 'auto', 
-                  justifyContent: 'center',
-                  color: 'inherit'
-                }}>
-                  <ListIcon />
-                </ListItemIcon>
-                <ListItemText primary="Lista de Tarefas" />
-              </ListItemButton>
-            </ListItem>
-          )}
-
-          {!open && (
-            <Tooltip title="Perfil do Usuário" placement="right">
-              <ListItem disablePadding>
-                <ListItemButton
-                  component={Link}
-                  to="/profile"
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: 'center',
-                    px: 2.5,
-                    bgcolor: isCurrentPath('/profile') ? 'primary.light' : 'transparent',
-                    color: isCurrentPath('/profile') ? 'primary.main' : 'inherit',
-                    '&:hover': {
-                      bgcolor: 'rgba(103, 58, 183, 0.08)',
-                      color: 'primary.main'
-                    },
-                    transition: 'background-color 0.2s ease-in-out, color 0.2s ease-in-out'
-                  }}
-                >
-                  <ListItemIcon sx={{ 
-                    minWidth: 0, 
-                    mr: open ? 3 : 'auto', 
-                    justifyContent: 'center',
-                    color: 'inherit'
-                  }}>
-                    <AccountCircleIcon />
-                  </ListItemIcon>
-                  {open && <ListItemText primary="Perfil do Usuário" />}
-                </ListItemButton>
-              </ListItem>
-            </Tooltip>
-          )}
-          {open && (
-            <ListItem disablePadding>
-              <ListItemButton
-                component={Link}
-                to="/profile"
-                sx={{
-                  minHeight: 48,
-                  justifyContent: 'initial',
-                  px: 2.5,
-                  bgcolor: isCurrentPath('/profile') ? 'primary.light' : 'transparent',
-                  color: isCurrentPath('/profile') ? 'primary.main' : 'inherit',
-                  '&:hover': {
-                    bgcolor: 'rgba(103, 58, 183, 0.08)',
-                    color: 'primary.main'
-                  },
-                  transition: 'background-color 0.2s ease-in-out, color 0.2s ease-in-out'
-                }}
-              >
-                <ListItemIcon sx={{ 
-                  minWidth: 0, 
-                  mr: open ? 3 : 'auto', 
-                  justifyContent: 'center',
-                  color: 'inherit'
-                }}>
-                  <AccountCircleIcon />
-                </ListItemIcon>
-                <ListItemText primary="Perfil do Usuário" />
-              </ListItemButton>
-            </ListItem>
-          )}
+          {menuItems.map((item) => (
+            <MenuItem
+              key={item.path}
+              open={open}
+              path={item.path}
+              icon={item.icon}
+              label={item.label}
+              isCurrentPath={isCurrentPath(item.path)}
+            />
+          ))}
         </List>
 
-        <Box sx={{ flexGrow: 1 }} />
-
-        <Box sx={{ padding: '16px', display: 'flex', justifyContent: 'flex-end' }}>
+        <Box sx={{ flexGrow: 1, padding: '16px', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
           <IconButton
             onClick={toggleDrawer}
             sx={{
@@ -301,40 +175,13 @@ export default function UserDrawer() {
 
         <Divider />
 
-        {!open && (
-          <Tooltip title="Sair" placement="right">
-            <ListItemButton
-              onClick={handleLogout}
-              sx={{ minHeight: 48, justifyContent: 'center', px: 2.5 }}
-            >
-              <ListItemIcon sx={{ 
-                minWidth: 0, 
-                mr: 'auto', 
-                justifyContent: 'center',
-                color: 'inherit'
-              }}>
-                <LogoutIcon />
-              </ListItemIcon>
-              {open && <ListItemText primary="Sair" />}
-            </ListItemButton>
-          </Tooltip>
-        )}
-        {open && (
-          <ListItemButton
-            onClick={handleLogout}
-            sx={{ minHeight: 48, justifyContent: 'initial', px: 2.5 }}
-          >
-            <ListItemIcon sx={{ 
-              minWidth: 0, 
-              mr: 3, 
-              justifyContent: 'center',
-              color: 'inherit'
-            }}>
-              <LogoutIcon />
-            </ListItemIcon>
-            <ListItemText primary="Sair" />
-          </ListItemButton>
-        )}
+        <MenuItem
+          open={open}
+          icon={LogoutIcon}
+          label="Sair"
+          onClick={handleLogout}
+          isCurrentPath={false}
+        />
       </Box>
     </Drawer>
   );
