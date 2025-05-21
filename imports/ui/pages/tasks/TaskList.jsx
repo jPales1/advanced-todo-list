@@ -20,6 +20,7 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LockIcon from '@mui/icons-material/Lock';
+import { ReactiveVar } from 'meteor/reactive-var';
 
 const statusColors = {
   'Cadastrada': { bg: 'grey.200', color: 'grey' },
@@ -27,13 +28,16 @@ const statusColors = {
   'Concluída': { bg: '#d1fae5', color: '#059669' },
 };
 
+const showCompletedVar = new ReactiveVar(false);
+
 export const TaskList = () => {
   const [taskName, setTaskName] = useState('');
   const [isPersonal, setIsPersonal] = useState(false);
   const [taskError, setTaskError] = useState('');
   const user = useTracker(() => Meteor.user());
+  const showCompleted = useTracker(() => showCompletedVar.get());
   const tasks = useTracker(() => {
-    Meteor.subscribe('tasks');
+    Meteor.subscribe('tasks', showCompleted);
     return TasksCollection.find({}).fetch();
   });
   const users = useTracker(() => {
@@ -109,16 +113,28 @@ export const TaskList = () => {
             error={!!taskError}
             helperText={taskError}
           />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={isPersonal}
-                onChange={(e) => setIsPersonal(e.target.checked)}
-                color="primary"
-              />
-            }
-            label="Tarefa Pessoal"
-          />
+          <Box display="flex" gap={2}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={isPersonal}
+                  onChange={(e) => setIsPersonal(e.target.checked)}
+                  color="primary"
+                />
+              }
+              label="Tarefa Pessoal"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={showCompleted}
+                  onChange={(e) => showCompletedVar.set(e.target.checked)}
+                  color="primary"
+                />
+              }
+              label="Mostrar Tarefas Concluídas"
+            />
+          </Box>
         </Stack>
         <Stack spacing={2}>
           {tasks.map((task) => {
