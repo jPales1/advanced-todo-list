@@ -113,7 +113,7 @@ export const TaskList = () => {
             error={!!taskError}
             helperText={taskError}
           />
-          <Box display="flex" gap={2}>
+          <Box display="flex" justifyContent="space-between" gap={2}>
             <FormControlLabel
               control={
                 <Checkbox
