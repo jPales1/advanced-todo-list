@@ -4,7 +4,7 @@ import { TasksCollection } from '../imports/api/TasksCollection';
 import '../imports/api/tasksMethods';
 import '../imports/api/usersMethods';
 
-Meteor.publish('tasks', function publishTasks(showCompleted) {
+Meteor.publish('tasks', function publishTasks(showCompleted, searchText) {
   if (!this.userId) {
     return this.ready();
   }
@@ -13,12 +13,17 @@ Meteor.publish('tasks', function publishTasks(showCompleted) {
     ? {} 
     : { situation: { $in: ['Cadastrada', 'Em Andamento'] } };
 
+  const searchFilter = searchText 
+    ? { name: { $regex: searchText, $options: 'i' } }
+    : {};
+
   return TasksCollection.find({
     $or: [
       { isPersonal: false },
       { userId: this.userId },
     ],
-    ...situationFilter
+    ...situationFilter,
+    ...searchFilter
   });
 });
 
