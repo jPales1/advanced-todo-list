@@ -21,6 +21,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LockIcon from '@mui/icons-material/Lock';
 import { ReactiveVar } from 'meteor/reactive-var';
+import { NewTaskModal } from '../../components/tasks/NewTaskModal';
 
 const statusColors = {
   'Cadastrada': { bg: 'grey.200', color: 'grey' },
@@ -32,9 +33,7 @@ const showCompletedVar = new ReactiveVar(false);
 const searchTextVar = new ReactiveVar('');
 
 export const TaskList = () => {
-  const [taskName, setTaskName] = useState('');
-  const [isPersonal, setIsPersonal] = useState(false);
-  const [taskError, setTaskError] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const user = useTracker(() => Meteor.user());
   const showCompleted = useTracker(() => showCompletedVar.get());
   const searchText = useTracker(() => searchTextVar.get());
@@ -49,20 +48,12 @@ export const TaskList = () => {
 
   const navigate = useNavigate();
 
-  const handleAddTask = () => {
-    if (taskName.trim()) {
-      setTaskError('');
-      Meteor.call('tasks.insert', { name: taskName, isPersonal, createdBy: user.username }, (error) => {
-        if (error) {
-          console.error('Erro ao adicionar tarefa:', error);
-        } else {
-          setTaskName('');
-          setIsPersonal(false);
-        }
-      });
-    } else {
-      setTaskError('Por favor, preencha o nome da tarefa');
-    }
+  const handleAddTask = (taskName, isPersonal) => {
+    Meteor.call('tasks.insert', { name: taskName, isPersonal, createdBy: user.username }, (error) => {
+      if (error) {
+        console.error('Erro ao adicionar tarefa:', error);
+      }
+    });
   };
 
   const handleDeleteTask = (taskId) => {
@@ -97,55 +88,36 @@ export const TaskList = () => {
               bgcolor: 'primary.main',
               '&:hover': { bgcolor: 'primary.dark' }
             }}
-            onClick={handleAddTask}
+            onClick={() => setIsModalOpen(true)}
           >
             Nova Tarefa
           </Button>
         </Box>
-        <Stack mb={3}>
+
+        {/* Seção de Pesquisa e Filtros */}
+        <Box>
           <TextField
             label="Pesquisar tarefas"
             variant="outlined"
             fullWidth
             value={searchText}
             onChange={(e) => searchTextVar.set(e.target.value)}
+            size="small"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={showCompleted}
+                onChange={(e) => showCompletedVar.set(e.target.checked)}
+                color="primary"
+              />
+            }
+            label="Mostrar Concluídas"
             sx={{ mb: 2 }}
           />
-          <TextField
-            label="Nova Tarefa"
-            variant="outlined"
-            fullWidth
-            value={taskName}
-            onChange={(e) => {
-              setTaskName(e.target.value);
-              setTaskError('');
-            }}
-            error={!!taskError}
-            helperText={taskError}
-          />
-          <Box display="flex" justifyContent="space-between" gap={2}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={isPersonal}
-                  onChange={(e) => setIsPersonal(e.target.checked)}
-                  color="primary"
-                />
-              }
-              label="Tarefa Pessoal"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={showCompleted}
-                  onChange={(e) => showCompletedVar.set(e.target.checked)}
-                  color="primary"
-                />
-              }
-              label="Mostrar Tarefas Concluídas"
-            />
-          </Box>
-        </Stack>
+        </Box>
+
+        {/* Lista de Tarefas */}
         <Stack spacing={2}>
           {tasks.map((task) => {
             const creatorUser = getCreatorUser(task.createdBy);
@@ -196,6 +168,12 @@ export const TaskList = () => {
           })}
         </Stack>
       </Paper>
+
+      <NewTaskModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAddTask={handleAddTask}
+      />
     </Container>
   );
 };
