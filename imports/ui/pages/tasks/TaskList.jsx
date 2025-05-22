@@ -29,6 +29,7 @@ const statusColors = {
 };
 
 const showCompletedVar = new ReactiveVar(false);
+const searchTextVar = new ReactiveVar('');
 
 export const TaskList = () => {
   const [taskName, setTaskName] = useState('');
@@ -36,8 +37,9 @@ export const TaskList = () => {
   const [taskError, setTaskError] = useState('');
   const user = useTracker(() => Meteor.user());
   const showCompleted = useTracker(() => showCompletedVar.get());
+  const searchText = useTracker(() => searchTextVar.get());
   const tasks = useTracker(() => {
-    Meteor.subscribe('tasks', showCompleted);
+    Meteor.subscribe('tasks', showCompleted, searchText);
     return TasksCollection.find({}).fetch();
   });
   const users = useTracker(() => {
@@ -101,6 +103,14 @@ export const TaskList = () => {
           </Button>
         </Box>
         <Stack mb={3}>
+          <TextField
+            label="Pesquisar tarefas"
+            variant="outlined"
+            fullWidth
+            value={searchText}
+            onChange={(e) => searchTextVar.set(e.target.value)}
+            sx={{ mb: 2 }}
+          />
           <TextField
             label="Nova Tarefa"
             variant="outlined"
