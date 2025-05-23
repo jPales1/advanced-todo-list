@@ -42,4 +42,26 @@ Meteor.methods({
       { $set: { name, description, situation, isPersonal } }
     );
   },
+  async 'tasks.count'(showCompleted, searchText) {
+    if (!this.userId) {
+      throw new Meteor.Error('Not authorized');
+    }
+
+    const situationFilter = showCompleted 
+      ? {} 
+      : { situation: { $in: ['Cadastrada', 'Em Andamento'] } };
+
+    const searchFilter = searchText 
+      ? { name: { $regex: searchText, $options: 'i' } }
+      : {};
+
+    return await TasksCollection.find({
+      $or: [
+        { isPersonal: false },
+        { userId: this.userId },
+      ],
+      ...situationFilter,
+      ...searchFilter
+    }).countAsync();
+  },
 });
