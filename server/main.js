@@ -4,10 +4,13 @@ import { TasksCollection } from '../imports/api/TasksCollection';
 import '../imports/api/tasksMethods';
 import '../imports/api/usersMethods';
 
-Meteor.publish('tasks', function publishTasks(showCompleted, searchText) {
+Meteor.publish('tasks', function publishTasks(showCompleted, searchText, page = 1) {
   if (!this.userId) {
     return this.ready();
   }
+
+  const pageSize = 4;
+  const skip = (page - 1) * pageSize;
 
   const situationFilter = showCompleted 
     ? {} 
@@ -24,6 +27,10 @@ Meteor.publish('tasks', function publishTasks(showCompleted, searchText) {
     ],
     ...situationFilter,
     ...searchFilter
+  }, {
+    skip,
+    limit: pageSize,
+    sort: { createdAt: -1 }
   });
 });
 
