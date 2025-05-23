@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTracker } from 'meteor/react-meteor-data';
 import { TasksCollection } from '../../../api/TasksCollection';
 import { useNavigate } from 'react-router-dom';
@@ -20,8 +20,11 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LockIcon from '@mui/icons-material/Lock';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import { ReactiveVar } from 'meteor/reactive-var';
 import { NewTaskModal } from '../../components/tasks/NewTaskModal';
+import { Tracker } from 'meteor/tracker';
 
 const statusColors = {
   'Cadastrada': { bg: 'grey.200', color: 'grey' },
@@ -31,20 +34,37 @@ const statusColors = {
 
 const showCompletedVar = new ReactiveVar(false);
 const searchTextVar = new ReactiveVar('');
+const currentPageVar = new ReactiveVar(1);
 
 export const TaskList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [totalTasks, setTotalTasks] = useState(0);
   const user = useTracker(() => Meteor.user());
   const showCompleted = useTracker(() => showCompletedVar.get());
   const searchText = useTracker(() => searchTextVar.get());
+  const currentPage = useTracker(() => currentPageVar.get());
   const tasks = useTracker(() => {
-    Meteor.subscribe('tasks', showCompleted, searchText);
+    Meteor.subscribe('tasks', showCompleted, searchText, currentPage);
     return TasksCollection.find({}).fetch();
   });
   const users = useTracker(() => {
     Meteor.subscribe('userData');
     return Meteor.users.find({}).fetch();
   });
+
+  useEffect(() => {
+    const computation = Tracker.autorun(() => {
+      Meteor.call('tasks.count', showCompleted, searchText, (error, result) => {
+        if (!error) {
+          setTotalTasks(result);
+        }
+      });
+    });
+
+    return () => {
+      computation.stop();
+    };
+  }, [showCompleted, searchText]);
 
   const navigate = useNavigate();
 
@@ -70,6 +90,19 @@ export const TaskList = () => {
 
   const getCreatorUser = (username) => {
     return users.find(u => u.username === username);
+  };
+
+  const handleNextPage = () => {
+    const totalPages = Math.ceil(totalTasks / 4);
+    if (currentPage < totalPages) {
+      currentPageVar.set(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      currentPageVar.set(currentPage - 1);
+    }
   };
 
   return (
@@ -101,14 +134,20 @@ export const TaskList = () => {
             variant="outlined"
             fullWidth
             value={searchText}
-            onChange={(e) => searchTextVar.set(e.target.value)}
+            onChange={(e) => {
+              searchTextVar.set(e.target.value);
+              currentPageVar.set(1); // Reset para primeira página ao pesquisar
+            }}
             size="small"
           />
           <FormControlLabel
             control={
               <Checkbox
                 checked={showCompleted}
-                onChange={(e) => showCompletedVar.set(e.target.checked)}
+                onChange={(e) => {
+                  showCompletedVar.set(e.target.checked);
+                  currentPageVar.set(1); // Reset para primeira página ao mudar filtro
+                }}
                 color="primary"
               />
             }
@@ -167,6 +206,31 @@ export const TaskList = () => {
             );
           })}
         </Stack>
+
+        {/* Controles de Paginação */}
+        <Box display="flex" justifyContent="center" alignItems="center" mt={3} gap={2}>
+          <Button
+            variant="outlined"
+            startIcon={<NavigateBeforeIcon />}
+            onClick={handlePreviousPage}
+            disabled={currentPage === 1}
+            sx={{ borderRadius: 2, textTransform: 'none' }}
+          >
+            Anterior
+          </Button>
+          <Typography variant="body1">
+            Página {currentPage} de {Math.ceil(totalTasks / 4)}
+          </Typography>
+          <Button
+            variant="outlined"
+            endIcon={<NavigateNextIcon />}
+            onClick={handleNextPage}
+            disabled={currentPage >= Math.ceil(totalTasks / 4)}
+            sx={{ borderRadius: 2, textTransform: 'none' }}
+          >
+            Próxima
+          </Button>
+        </Box>
       </Paper>
 
       <NewTaskModal
