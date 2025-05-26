@@ -53,8 +53,8 @@ Meteor.publish('userData', function publishUserData() {
   }
 
   return Meteor.users.find(
-    { _id: this.userId },
-    { fields: { profile: 1 } }
+    {}, 
+    { fields: { username: 1, profile: 1 } }
   );
 });
 
