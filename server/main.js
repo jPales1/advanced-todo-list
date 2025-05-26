@@ -34,6 +34,19 @@ Meteor.publish('tasks', function publishTasks(showCompleted, searchText, page = 
   });
 });
 
+Meteor.publish('tasksCount', function publishTasksCount() {
+  if (!this.userId) {
+    return this.ready();
+  }
+
+  return TasksCollection.find({
+    $or: [
+      { isPersonal: false },
+      { userId: this.userId },
+    ]
+  });
+});
+
 Meteor.publish('userData', function publishUserData() {
   if (!this.userId) {
     return this.ready();
