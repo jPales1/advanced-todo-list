@@ -15,12 +15,15 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 export const Welcome = () => {
   const { totalTasks, inProgressTasks, completedTasks } = useTracker(() => {
-    Meteor.subscribe('tasks');
-    const tasks = TasksCollection.find({}).fetch();
+    Meteor.subscribe('tasksCount');
+    const totalTasks = TasksCollection.find({}).count();
+    const inProgressTasks = TasksCollection.find({ situation: 'Em Andamento' }).count();
+    const completedTasks = TasksCollection.find({ situation: 'Concluída' }).count();
+    
     return {
-      totalTasks: tasks.length,
-      inProgressTasks: tasks.filter(task => task.situation === 'Em Andamento').length,
-      completedTasks: tasks.filter(task => task.situation === 'Concluída').length,
+      totalTasks,
+      inProgressTasks,
+      completedTasks,
     };
   });
 
