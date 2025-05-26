@@ -20,7 +20,11 @@ export const App = () => {
     <div className='main'>
       <Router>
         {!user ? (
-          <Login />
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="*" element={<Navigate to="/login" />} />
+          </Routes>
         ) : (
           <>
             <UserDrawer />
@@ -28,8 +32,8 @@ export const App = () => {
               <Route path="/" element={<Welcome />} />
               <Route path="/tasks" element={<TaskList />} />
               <Route path="/tasks/edit/:taskId" element={<EditTask />} />
-              <Route path="*" element={<Navigate to="/" />} />
               <Route path="/profile" element={<UserProfile />} />
+              <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </>
         )}
