@@ -8,7 +8,6 @@ import UserDrawer from './components/common/Drawer';
 import { Welcome } from './pages/Welcome';
 import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
-import { ResetPassword } from './pages/auth/ResetPassword';
 import { UserProfile } from './pages/profile/UserProfile';
 import { EditTask } from './pages/tasks/EditTask';
 import { TaskList } from './pages/tasks/TaskList';
