@@ -123,10 +123,8 @@ export const UserProfile = () => {
               fullWidth
               value={birthDate}
               onChange={(e) => setBirthDate(e.target.value)}
-              slotProps={{
-                input: {
-                  shrink: true
-                }
+              InputLabelProps={{
+                shrink: true,
               }}
               sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
             />
