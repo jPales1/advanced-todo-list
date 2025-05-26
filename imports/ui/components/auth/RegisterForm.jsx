@@ -9,14 +9,12 @@ import Stack from "@mui/material/Stack";
 import InputAdornment from "@mui/material/InputAdornment";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Lock from "@mui/icons-material/Lock";
-import Email from "@mui/icons-material/Email";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 
 export const RegisterForm = () => {
   const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
@@ -31,7 +29,6 @@ export const RegisterForm = () => {
 
     Accounts.createUser({
       username,
-      email,
       password,
     }, (error) => {
       if (error) {
@@ -75,29 +72,6 @@ export const RegisterForm = () => {
             required
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-          />
-
-          <Typography variant="body3" fontWeight="bold">
-            Email
-          </Typography>
-          <TextField
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Email />
-                  </InputAdornment>
-                ),
-              },
-            }}
-            type="email"
-            placeholder="Email"
-            variant="outlined"
-            fullWidth
-            name="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
           />
 
           <Typography variant="body3" fontWeight="bold">
